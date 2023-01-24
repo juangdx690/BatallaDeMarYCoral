@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.batallademarycoral.EquipoRojo">
+   <children>
+      <TextField layoutX="26.0" layoutY="35.0" text="Equipo Rojo" />
+   </children>
+</AnchorPane>

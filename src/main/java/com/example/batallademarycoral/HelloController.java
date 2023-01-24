@@ -14,10 +14,13 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Random;
 
@@ -29,110 +32,127 @@ public class HelloController {
 
     boolean pito = true;
     @FXML
-    private Button btn;
-    @FXML
-    private ImageView barco1;
-    @FXML
     private AnchorPane ventana;
-    @FXML
-    private ImageView barco2;
 
-    Barco barco;
-    Barco barcoF;
-
+    Barco barcoDesEsp;
+    Barco barcoLanEsp;
+    Barco barcoAcoEsp;
+    Barco barcoSubEsp;
+    Barco barcoDesFr;
+    Barco barcoLanFr;
+    Barco barcoAcoFr;
+    Barco barcoSubFr;
+    ControlDeJuego control;
+    private Image fondo;
 
     public void initialize() {
+
+        Image fondo = new Image(getClass().getResourceAsStream("images/background.png"));
+        ImageView back = new ImageView(fondo);
+
+
+        ventana.setBackground(new Background(new BackgroundImage(back.getImage(), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
+
+        ventanaEquipoAzul();
+        ventanaEquipoRojo();
+
+        instanciarBarcos();
+
+
+    }
+
+    public void ventanaEquipoRojo()  {
+
+        Stage stage = new Stage();
+
+        VentanaRojo ventanaRojo = new VentanaRojo();
+
+        try {
+            ventanaRojo.start(stage);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public void ventanaEquipoAzul()  {
+
+        Stage stage = new Stage();
+
+        VentanaAzul ventanaAzul = new VentanaAzul();
+
+        try {
+            ventanaAzul.start(stage);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
+    public void instanciarBarcos() {
+
+        control = new ControlDeJuego();
 
         ImageView destructorImg = new ImageView();
         destructorImg.setImage(new Image(getClass().getResourceAsStream("images/barcoDestructorRojo.png")));
         destructorImg.setLayoutX(28);
         destructorImg.setLayoutY(371);
-        barco = new Barco("destructor España", destructorImg);
+        control.addBarco(barcoDesEsp = new Barco("destructor", "España", destructorImg, control.getBarcos()));
+
+        ImageView acorazadoImg = new ImageView();
+        acorazadoImg.setImage(new Image(getClass().getResourceAsStream("images/barcoDestructorRojo.png")));
+        acorazadoImg.setLayoutX(28);
+        acorazadoImg.setLayoutY(75);
+        control.addBarco(barcoAcoEsp = new Barco("acorazado", "España", acorazadoImg, control.getBarcos()));
+
+        ImageView lanchaImg = new ImageView();
+        lanchaImg.setImage(new Image(getClass().getResourceAsStream("images/barcoDestructorRojo.png")));
+        lanchaImg.setLayoutX(28);
+        lanchaImg.setLayoutY(149);
+        control.addBarco(barcoLanEsp = new Barco("lancha", "España", lanchaImg, control.getBarcos()));
+
+        ImageView submarinoImg = new ImageView();
+        submarinoImg.setImage(new Image(getClass().getResourceAsStream("images/barcoDestructorRojo.png")));
+        submarinoImg.setLayoutX(28);
+        submarinoImg.setLayoutY(575);
+        control.addBarco(barcoSubEsp = new Barco("submarino", "España", submarinoImg, control.getBarcos()));
 
 
         ImageView destructorImg2 = new ImageView();
         destructorImg2.setImage(new Image(getClass().getResourceAsStream("images/barcoDestructorAzul.png")));
         destructorImg2.setLayoutX(882);
         destructorImg2.setLayoutY(371);
-        barcoF = new Barco("destructor Francia", destructorImg2);
-        ventana.getChildren().addAll(barco.getImagenBarco(), barcoF.getImagenBarco());
-
-    }
+        control.addBarco(barcoDesFr = new Barco("destructor", "Francia", destructorImg2, control.getBarcos()));
 
 
+        ImageView acorazadoImg2 = new ImageView();
+        acorazadoImg2.setImage(new Image(getClass().getResourceAsStream("images/barcoDestructorAzul.png")));
+        acorazadoImg2.setLayoutX(876);
+        acorazadoImg2.setLayoutY(75);
+        control.addBarco(barcoAcoFr = new Barco("acorazado", "Francia", acorazadoImg2, control.getBarcos()));
 
-    @FXML
-    public void hacerMovimiento(ActionEvent actionEvent) {
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.01), (ActionEvent ae) -> {
-
-                Movimiento.mover(barco);
-                Colisiones.detectarColision(barco);
-                if (Colisiones.detectarColision(barco, barcoF)) {
-
-                    int disparo = barco.disparar();
-                    System.out.println(barco.getNombre() + " dispara a:" + barcoF.getNombre() + " y le quita: " + disparo);
-                    barcoF.setVida(barcoF.getVida() - disparo);
-
-                    if (barcoF.getVida() <= 0) {
-
-                        System.out.println("el " + barcoF.getNombre() + " muere");
-                        ventana.getChildren().remove(barcoF.getImagenBarco());
-                        ganador();
+        ImageView lanchaImg2 = new ImageView();
+        lanchaImg2.setImage(new Image(getClass().getResourceAsStream("images/barcoDestructorAzul.png")));
+        lanchaImg2.setLayoutX(876);
+        lanchaImg2.setLayoutY(147);
+        control.addBarco(barcoLanFr = new Barco("lancha", "Francia", lanchaImg2, control.getBarcos()));
 
 
-                    } else {
-                        System.out.println("Al " + barcoF.getNombre() + " le queda: " + barcoF.getVida() + " de vida.");
+        ImageView submarinoImg2 = new ImageView();
+        submarinoImg2.setImage(new Image(getClass().getResourceAsStream("images/barcoDestructorAzul.png")));
+        submarinoImg2.setLayoutX(876);
+        submarinoImg2.setLayoutY(575);
+        control.addBarco(barcoSubFr = new Barco("submarino", "Francia", submarinoImg2, control.getBarcos()));
 
-                    }
-
-                }
-
-
-                Movimiento.mover(barcoF);
-                Colisiones.detectarColision(barcoF);
-
-                if (Colisiones.detectarColision(barcoF, barco)) {
-
-                    int disparo = barcoF.disparar();
-                    System.out.println(barcoF.getNombre() + " dispara a:" + barco.getNombre() + " y le quita: " + disparo);
-                    barco.setVida(barco.getVida() - disparo);
-
-                    if (barco.getVida() <= 0) {
-
-                        System.out.println("el " + barco.getNombre() + " muere");
-                        ventana.getChildren().remove(barco.getImagenBarco());
-
-
-                    } else {
-                        System.out.println("Al " + barco.getNombre() + " le queda: " + barco.getVida() + " de vida.");
-
-                    }
-
-                }
-
-
-            }));
-            timeline.setCycleCount(Animation.INDEFINITE);
-            timeline.play();
-
-
+        ventana.getChildren().addAll(barcoDesEsp.getImagenBarco(), barcoDesFr.getImagenBarco(), barcoAcoEsp.getImagenBarco(), barcoAcoFr.getImagenBarco(),
+                barcoLanEsp.getImagenBarco(), barcoLanFr.getImagenBarco(), barcoSubEsp.getImagenBarco(), barcoSubFr.getImagenBarco());
 
 
     }
-
 
 
     public void ganador() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setHeaderText(null);
-        alert.setTitle("Confirmación");
-        alert.setContentText("¿Estas seguro de confirmar la acción?");
-        Optional<ButtonType> action = alert.showAndWait();
-
-        if (action.get() == ButtonType.OK) {
-            System.out.println("acabóo");
-        } else {
-            System.out.println("a");
-        }
     }
 }

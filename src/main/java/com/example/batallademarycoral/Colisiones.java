@@ -14,7 +14,7 @@ public class Colisiones {
     }
 
 
-    public static boolean detectarColision(Barco barco1, Barco barco2) {
+    public static boolean sonarDisparo(Barco barco1, Barco barco2) {
         double distancia = distanciaEntreBarcos(barco1, barco2);
         return distancia <= barco1.getSonar();
     }
